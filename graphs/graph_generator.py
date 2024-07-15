@@ -1,7 +1,7 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import pandas as pd
 from typing import List, Optional, Any
 
 class GraphGenerator:
@@ -9,37 +9,40 @@ class GraphGenerator:
         self.fig = None
         self.ax = None
 
-def generate_graph(self, data: pd.DataFrame, graph_type: str, x_column: Optional[str] = None, 
-                   y_column: Optional[str] = None, columns: Optional[List[str]] = None, 
-                   title: Optional[str] = None, x_label: Optional[str] = None, 
-                   y_label: Optional[str] = None, color: Optional[str] = None, 
-                   ax: Optional[plt.Axes] = None, **kwargs: Any) -> None:
-    if ax is None:
-        self.fig, self.ax = plt.subplots(figsize=(10, 6))
-    else:
-        self.ax = ax
-        self.fig = ax.figure
+    def generate_graph(self, data: pd.DataFrame, graph_type: str, x_column: Optional[str] = None, 
+                       y_column: Optional[str] = None, columns: Optional[List[str]] = None, 
+                       title: Optional[str] = None, x_label: Optional[str] = None, 
+                       y_label: Optional[str] = None, color: Optional[str] = None, 
+                       ax: Optional[plt.Axes] = None, **kwargs: Any) -> None:
+        if ax is None:
+            self.fig, self.ax = plt.subplots(figsize=(10, 6))
+        else:
+            self.ax = ax
+            self.fig = ax.figure
 
-    graph_functions = {
-        'line': self._line_plot,
-        'scatter': self._scatter_plot,
-        'bar': self._bar_plot,
-        'histogram': self._histogram,
-        'box': self._box_plot,
-        'violin': self._violin_plot,
-        'heatmap': self._heatmap,
-        'pie': self._pie_chart,
-        'area': self._area_plot,
-        'density': self._density_plot
-    }
-    
-    if graph_type in graph_functions:
-        graph_functions[graph_type](data, x_column, y_column, columns, color, **kwargs)
-    else:
-        raise ValueError(f"Unsupported graph type: {graph_type}")
+        graph_functions = {
+            'line': self._line_plot,
+            'scatter': self._scatter_plot,
+            'bar': self._bar_plot,
+            'histogram': self._histogram,
+            'box': self._box_plot,
+            'violin': self._violin_plot,
+            'heatmap': self._heatmap,
+            'pie': self._pie_chart,
+            'area': self._area_plot,
+            'density': self._density_plot
+        }
+        
+        if graph_type in graph_functions:
+            graph_functions[graph_type](data, x_column, y_column, columns, color, **kwargs)
+        else:
+            raise ValueError(f"Unsupported graph type: {graph_type}")
 
-    self._set_labels(title, x_label, y_label)
-    plt.tight_layout()
+        self._set_labels(title, x_label, y_label)
+        self.fig.tight_layout()
+        
+        # Return the figure instead of showing it
+        return self.fig
 
     def _line_plot(self, data, x_column, y_column, columns, color, **kwargs):
         self.ax.plot(data[x_column], data[y_column], color=color, **kwargs)

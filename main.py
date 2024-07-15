@@ -2,7 +2,9 @@ import tkinter as tk
 from gui.main_window import MainWindow
 from data.data_handler import DataHandler
 from graphs.graph_generator import GraphGenerator
+import matplotlib 
 
+matplotlib.use ('Agg')
 
 class VisualDataApp:
     def __init__(self):
