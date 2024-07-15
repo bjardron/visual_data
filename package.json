@@ -1,0 +1,19 @@
+{
+  "name": "visual_data",
+  "version": "0.1.0",
+  "description": "Python based graph generation",
+  "main": "main.py",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bjardron/visual_data.git"
+  },
+  "author": "Broderick Ardron",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/bjardron/visual_data/issues"
+  },
+  "homepage": "https://github.com/bjardron/visual_data#readme"
+}
