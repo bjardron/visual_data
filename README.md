@@ -18,7 +18,6 @@ This project is currently under active development. Some features may be incompl
 
 - Image processing algorithms
 - Data visualization tools
-- Machine learning models for visual data analysis
 - Utility functions for data manipulation
 
 ## Installation
