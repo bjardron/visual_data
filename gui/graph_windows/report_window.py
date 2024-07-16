@@ -16,7 +16,7 @@ class ReportWindow(tk.Toplevel):
         self.create_widgets()
 
     def get_data_columns(self):
-        return self.data_handler.get_column_names()
+        return self.data_handler.get_columns()
 
     def create_widgets(self):
         self.grid_columnconfigure((0, 1), weight=1)
