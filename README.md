@@ -28,3 +28,7 @@ To use this project, clone the repository and install the required dependencies:
 bash
 git clone https://github.com/bjardron/visual_data.git
 cd visual_data
+
+pip install -r requirements.txt 
+
+
