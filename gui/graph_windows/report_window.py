@@ -1,10 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-from reportlab.pdfgen import canvas as rlcanvas
-from reportlab.lib.pagesizes import letter
-import io
+from tkinter import messagebox
 
 class ReportWindow(tk.Toplevel):
     def __init__(self, master, data_handler, graph_generator):
@@ -59,34 +57,49 @@ class ReportWindow(tk.Toplevel):
         close_button.pack(side=tk.LEFT, padx=5)
 
     def generate_report(self):
+        selections = [(s.get(), x.get(), y.get()) for s, x, y in zip(self.selections, self.x_selections, self.y_selections) if s.get() != "None"]
+        if not selections:
+            messagebox.showwarning("No Selections", "Please select at least one graph type.")
+            return
+
+        fig, axs = plt.subplots(2, 3, figsize=(15, 10))
+        fig.suptitle("Data Report")
+
+        for i, (selection, x_axis, y_axis) in enumerate(selections):
+            if i >= 6:  # Limit to 6 graphs
+                break
+            ax = axs[i // 3, i % 3]
+            if selection != "Text Box":
+                self.graph_generator.generate_graph(
+                    data=self.data_handler.get_data(),
+                    graph_type=selection.lower(),
+                    x_column=x_axis,
+                    y_column=y_axis,
+                    title=f"{selection}: {y_axis} vs {x_axis}",
+                    x_label=x_axis,
+                    y_label=y_axis,
+                    ax=ax
+                )
+            else:
+                text_report = self.generate_text_report()
+                ax.text(0.5, 0.5, text_report, ha='center', va='center', wrap=True)
+                ax.axis('off')
+
+        # Turn off any unused subplots
+        for j in range(i+1, 6):
+            axs[j // 3, j % 3].axis('off')
+
+        plt.tight_layout()
+        
+        # Save the figure
         try:
-            selections = [(s.get(), x.get(), y.get()) for s, x, y in zip(self.selections, self.x_selections, self.y_selections) if s.get() != "None"]
-            if not selections:
-                raise ValueError("No graph types selected")
-
-            pdf_buffer = io.BytesIO()
-            pdf = rlcanvas.Canvas(pdf_buffer, pagesize=letter)
-
-            for i, (selection, x_axis, y_axis) in enumerate(selections):
-                if selection == "Text Box":
-                    text_report = self.generate_text_report()
-                    pdf.drawString(100, 700 - i*100, text_report)
-                else:
-                    fig = Figure(figsize=(5, 4), dpi=100)
-                    self.generate_graph(selection, fig, x_axis, y_axis)
-                    img_data = io.BytesIO()
-                    fig.savefig(img_data, format='png')
-                    img_data.seek(0)
-                    pdf.drawImage(img_data, 100, 700 - i*200, width=400, height=300)
-
-            pdf.save()
-            
-            with open("report.pdf", "wb") as f:
-                f.write(pdf_buffer.getvalue())
-            
-            messagebox.showinfo("Success", "Report generated and saved as 'report.pdf'")
+            fig.savefig("data_report.png")
+            messagebox.showinfo("Success", "Report generated and saved as 'data_report.png'")
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to generate report: {str(e)}")
+            messagebox.showerror("Error", f"Failed to save report: {str(e)}")
+
+        # Show the figure
+        plt.show()
 
     def generate_text_report(self):
         return self.data_handler.generate_summary()
