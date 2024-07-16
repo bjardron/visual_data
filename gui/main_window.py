@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from .graph_windows.custom_graph_window import CustomGraphWindow
+from .graph_windows.report_window import ReportWindow
 from .graph_windows.standard_graph_window import StandardGraphWindow
 from .data_management.data_viewer import DataViewer
 
@@ -81,7 +81,7 @@ class MainWindow:
         buttons = [
             ("Upload CSV", self.app.data_handler.load_csv),
             ("View Data", self.show_data_viewer),
-            ("Generate Custom Graph", self.show_custom_graph_window),
+            ("Generate Data Report", self.show_report_window),
             ("Generate Standard Graph", self.show_standard_graph_window),
         ]
 
@@ -95,9 +95,9 @@ class MainWindow:
         else:
             messagebox.showwarning("No Data", "Please upload a CSV file first.")
 
-    def show_custom_graph_window(self):
+    def show_report_window(self):
         if self.app.data_handler.data_loaded():
-            CustomGraphWindow(self.master, self.app)
+            ReportWindow(self.master, self.app)
         else:
             messagebox.showwarning("No Data", "Please upload a CSV file first.")
 
