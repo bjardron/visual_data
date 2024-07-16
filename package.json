@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/bjardron/visual_data/issues"
   },
-  "homepage": "https://github.com/bjardron/visual_data#readme"
+  "homepage": "https://github.com/bjardron/visual_data#readme",
+  "dependencies": {
+    "canvas": "^2.11.2"
+  }
 }

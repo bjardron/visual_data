@@ -104,3 +104,28 @@ class GraphGenerator:
             plt.show()
         else:
             raise ValueError("No graph has been generated yet.")
+
+    def generate_standard_graph(self, data: pd.DataFrame, x_axis: str, y_axis: str, graph_type: str) -> None:
+        graph_type_mapping = {
+            "Line Plot": "line",
+            "Bar Chart": "bar",
+            "Scatter Plot": "scatter",
+            "Histogram": "histogram",
+            "Box Plot": "box"
+        }
+        
+        mapped_graph_type = graph_type_mapping.get(graph_type)
+        if not mapped_graph_type:
+            raise ValueError(f"Unsupported graph type: {graph_type}")
+        
+        self.generate_graph(
+            data=data,
+            graph_type=mapped_graph_type,
+            x_column=x_axis,
+            y_column=y_axis,
+            title=f"{graph_type}: {y_axis} vs {x_axis}",
+            x_label=x_axis,
+            y_label=y_axis
+        )
+        
+        self.show_graph()

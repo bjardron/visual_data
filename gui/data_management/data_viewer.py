@@ -34,10 +34,6 @@ class DataViewer:
 
         self.load_data()
 
-        # Add preprocessing button
-        preprocess_button = tk.Button(self.window, text="Preprocess Data", command=self.show_preprocess_options)
-        preprocess_button.pack(pady=10)
-
     def load_data(self):
         data = self.app.data_handler.get_data()
         if data is not None:

@@ -97,7 +97,7 @@ class MainWindow:
 
     def show_report_window(self):
         if self.app.data_handler.data_loaded():
-            ReportWindow(self.master, self.app)
+            ReportWindow(self.master, self.app.data_handler, self.app.graph_generator)
         else:
             messagebox.showwarning("No Data", "Please upload a CSV file first.")
 
