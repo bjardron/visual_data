@@ -21,16 +21,14 @@ class GraphGenerator:
             self.fig = ax.figure
 
         graph_functions = {
-            'line': self._line_plot,
-            'scatter': self._scatter_plot,
-            'bar': self._bar_plot,
+            'line_plot': self._line_plot,
+            'bar_chart': self._bar_plot,
+            'scatter_plot': self._scatter_plot,
             'histogram': self._histogram,
-            'box': self._box_plot,
-            'violin': self._violin_plot,
+            'box_plot': self._box_plot,
+            'pie_chart': self._pie_chart,
             'heatmap': self._heatmap,
-            'pie': self._pie_chart,
-            'area': self._area_plot,
-            'density': self._density_plot
+            'area_plot': self._area_plot
         }
         
         if graph_type in graph_functions:
@@ -39,43 +37,32 @@ class GraphGenerator:
             raise ValueError(f"Unsupported graph type: {graph_type}")
 
         self._set_labels(title, x_label, y_label)
-        self.fig.tight_layout()
-        
-        # Return the figure instead of showing it
-        return self.fig
+        self.ax.tick_params(axis='x', rotation=45)
 
     def _line_plot(self, data, x_column, y_column, columns, color, **kwargs):
         self.ax.plot(data[x_column], data[y_column], color=color, **kwargs)
 
+    def _bar_plot(self, data, x_column, y_column, columns, color, **kwargs):
+        self.ax.bar(data[x_column], data[y_column], color=color, **kwargs)
+
     def _scatter_plot(self, data, x_column, y_column, columns, color, **kwargs):
         self.ax.scatter(data[x_column], data[y_column], color=color, **kwargs)
 
-    def _bar_plot(self, data, x_column, y_column, columns, color, **kwargs):
-        if y_column:
-            self.ax.bar(data[x_column], data[y_column], color=color, **kwargs)
-        else:
-            data[columns].sum().plot(kind='bar', ax=self.ax, color=color, **kwargs)
-
     def _histogram(self, data, x_column, y_column, columns, color, **kwargs):
-        self.ax.hist(data[columns or y_column], bins=kwargs.get('bins', 20), color=color, **kwargs)
+        self.ax.hist(data[x_column], bins=kwargs.get('bins', 20), color=color, **kwargs)
 
     def _box_plot(self, data, x_column, y_column, columns, color, **kwargs):
-        sns.boxplot(data=data[columns or y_column], ax=self.ax, color=color, **kwargs)
-
-    def _violin_plot(self, data, x_column, y_column, columns, color, **kwargs):
-        sns.violinplot(x=x_column, y=y_column, data=data, ax=self.ax, **kwargs)
-
-    def _heatmap(self, data, x_column, y_column, columns, color, **kwargs):
-        sns.heatmap(data[columns].corr(), ax=self.ax, cmap=color or 'coolwarm', annot=True, **kwargs)
+        sns.boxplot(x=data[x_column], y=data[y_column], ax=self.ax, color=color, **kwargs)
 
     def _pie_chart(self, data, x_column, y_column, columns, color, **kwargs):
         self.ax.pie(data[y_column], labels=data[x_column], autopct='%1.1f%%', colors=color, **kwargs)
 
-    def _area_plot(self, data, x_column, y_column, columns, color, **kwargs):
-        data[columns].plot.area(ax=self.ax, stacked=False, **kwargs)
+    def _heatmap(self, data, x_column, y_column, columns, color, **kwargs):
+        pivot_data = data.pivot(x_column, y_column, columns[0] if columns else 'value')
+        sns.heatmap(pivot_data, ax=self.ax, cmap=color or 'coolwarm', **kwargs)
 
-    def _density_plot(self, data, x_column, y_column, columns, color, **kwargs):
-        sns.kdeplot(data=data[columns or y_column], ax=self.ax, **kwargs)
+    def _area_plot(self, data, x_column, y_column, columns, color, **kwargs):
+        data.plot.area(x=x_column, y=columns or y_column, ax=self.ax, stacked=False, **kwargs)
 
     def _set_labels(self, title, x_label, y_label):
         if title:
@@ -84,34 +71,14 @@ class GraphGenerator:
             self.ax.set_xlabel(x_label)
         if y_label:
             self.ax.set_ylabel(y_label)
-        self.ax.tick_params(axis='x', rotation=45)
-
-    def save_graph(self, filename: str, dpi: int = 300) -> None:
-        if self.fig:
-            self.fig.savefig(filename, dpi=dpi, bbox_inches='tight')
-        else:
-            raise ValueError("No graph has been generated yet.")
-
-    def get_preview(self) -> np.ndarray:
-        if self.fig:
-            self.fig.canvas.draw()
-            return np.frombuffer(self.fig.canvas.tostring_rgb(), dtype=np.uint8).reshape(self.fig.canvas.get_width_height()[::-1] + (3,))
-        else:
-            raise ValueError("No graph has been generated yet.")
-
-    def show_graph(self) -> None:
-        if self.fig:
-            plt.show()
-        else:
-            raise ValueError("No graph has been generated yet.")
 
     def generate_standard_graph(self, data: pd.DataFrame, x_axis: str, y_axis: str, graph_type: str) -> None:
         graph_type_mapping = {
-            "Line Plot": "line",
-            "Bar Chart": "bar",
-            "Scatter Plot": "scatter",
+            "Line Plot": "line_plot",
+            "Bar Chart": "bar_chart",
+            "Scatter Plot": "scatter_plot",
             "Histogram": "histogram",
-            "Box Plot": "box"
+            "Box Plot": "box_plot"
         }
         
         mapped_graph_type = graph_type_mapping.get(graph_type)
@@ -128,4 +95,4 @@ class GraphGenerator:
             y_label=y_axis
         )
         
-        self.show_graph()
+        plt.show()

@@ -70,9 +70,10 @@ class ReportWindow(tk.Toplevel):
                 break
             ax = axs[i // 3, i % 3]
             if selection != "Text Box":
+                graph_type = selection.lower().replace(' ', '_')
                 self.graph_generator.generate_graph(
                     data=self.data_handler.get_data(),
-                    graph_type=selection.lower(),
+                    graph_type=graph_type,
                     x_column=x_axis,
                     y_column=y_axis,
                     title=f"{selection}: {y_axis} vs {x_axis}",
@@ -102,7 +103,8 @@ class ReportWindow(tk.Toplevel):
         plt.show()
 
     def generate_text_report(self):
-        return self.data_handler.generate_summary()
+        # Implement this method to generate a text summary of the data
+        return "Data Summary: ..."
 
     def generate_graph(self, graph_type, figure, x_axis, y_axis):
         self.graph_generator.generate_report_graph(figure, graph_type, x_axis, y_axis)
